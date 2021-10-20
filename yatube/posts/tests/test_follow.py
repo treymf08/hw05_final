@@ -23,17 +23,22 @@ class PostsPagesTests(TestCase):
         self.authorized_client_follow.force_login(self.user_follow)
 
     def test_profile_unfollow(self):
-        """
-        Проверяем, что пользователь может
-        удалять их из подписок других пользователей.
+        """Проверяем, что пользователь может
+        подписываться и отписываться от других пользователей.
         """
         count_follows = Follow.objects.count()
-        Follow.objects.create(user=self.user, author=self.user_follow)
+        self.authorized_client.get(
+            reverse('posts:profile_follow', kwargs={
+                    'username': 'TestFollow'})
+        )
         count_follows_after_cread = Follow.objects.count()
 
         self.assertEqual(count_follows_after_cread, count_follows + 1)
 
-        Follow.objects.filter(user=self.user, author=self.user_follow).delete()
+        self.authorized_client.get(
+            reverse('posts:profile_unfollow', kwargs={
+                    'username': 'TestFollow'})
+        )
         count_follows_after_delete = Follow.objects.count()
 
         self.assertEqual(count_follows_after_delete, count_follows)

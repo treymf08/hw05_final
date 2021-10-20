@@ -37,7 +37,7 @@ def group_posts(request, slug):
 @require_GET
 def profile(request, username):
     author = get_object_or_404(User, username=username)
-    posts = Post.objects.filter(author=author)
+    posts = author.posts.all()
     following = (
         request.user.is_authenticated
         and request.user != author
@@ -61,8 +61,8 @@ def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     comments = post.comments.all()
     author = post.author
-    count_posts = Post.objects.filter(author=post.author).count()
-    form = CommentForm(request.POST or None)
+    count_posts = author.posts.count()
+    form = CommentForm(request.POST)
     context = {
         'comments': comments,
         'form': form,
