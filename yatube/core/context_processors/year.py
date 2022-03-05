@@ -7,3 +7,4 @@ def year(request):
     return {
         'year': dt_now.year
     }
+
